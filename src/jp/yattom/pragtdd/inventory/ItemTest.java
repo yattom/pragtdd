@@ -35,4 +35,12 @@ public class ItemTest {
     public void 在庫を増やす_ゼロは許さない() throws Exception {
         item.addStock(0);
     }
+
+    @Test
+    public void 在庫を取得できる_減らして取得() throws Exception {
+        item.addStock(30);
+        item.addStock(-10);
+        assertThat(item.getStock(), is(20));
+    }
+
 }
