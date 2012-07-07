@@ -145,4 +145,28 @@ public class ItemTest {
         assertThat(item.getStock(Date0116), is(30));
         assertThat(item.getStock(Date0121), is(25));
     }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる_在庫増の瞬間の時刻() throws Exception {
+        item.addStock(20, buildDate(2012, 1, 1, 10, 0, 0));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 9, 59, 59)), is(0));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 10, 0, 0)), is(20));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 10, 0, 1)), is(20));
+    }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる_在庫増が同時に起きる場合() throws Exception {
+        item.addStock(20, buildDate(2012, 1, 1, 10, 0, 0));
+        item.addStock(10, buildDate(2012, 1, 1, 10, 0, 0));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 9, 59, 59)), is(0));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 10, 0, 0)), is(30));
+    }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる_在庫増減が同時に起きる場合() throws Exception {
+        item.addStock(-10, buildDate(2012, 1, 1, 10, 0, 0));
+        item.addStock(20, buildDate(2012, 1, 1, 10, 0, 0));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 9, 59, 59)), is(0));
+        assertThat(item.getStock(buildDate(2012, 1, 1, 10, 0, 0)), is(10));
+    }
 }
