@@ -55,4 +55,10 @@ public class ItemTest {
         item.addStock(5);
         item.addStock(-10);
     }
+
+    @Test
+    public void 在庫を再設定できる() throws Exception {
+        item.setStock(5);
+        assertThat(item.getStock(), is(5));
+    }
 }

@@ -18,4 +18,8 @@ public class Item {
         this.stock += value;
     }
 
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
 }
