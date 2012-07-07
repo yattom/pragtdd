@@ -8,7 +8,7 @@ public class Item {
         return stock;
     }
 
-    public void addStock(int value) {
+    public void addStock(int value) throws InventoryException {
         this.stock += value;
     }
 
