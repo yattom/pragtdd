@@ -12,7 +12,7 @@ public class Item {
         if(value == 0) {
             throw new InventoryException("在庫数の増加分としてゼロは許されない");
         }
-        setNewStockValue(stock + value);
+        setStock(stock + value);
     }
 
     private void validateNewStockValue(int value) throws InventoryException {
@@ -22,12 +22,7 @@ public class Item {
     }
 
     public void setStock(int stock) throws InventoryException {
-        setNewStockValue(stock);
-    }
-
-    private void setNewStockValue(int stock) throws InventoryException {
         validateNewStockValue(stock);
         this.stock = stock;
     }
-
 }
