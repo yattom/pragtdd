@@ -61,4 +61,23 @@ public class ItemTest {
         item.setStock(5);
         assertThat(item.getStock(), is(5));
     }
+
+    @Test
+    public void 在庫を再設定できる_ゼロにできる() throws Exception {
+        item.addStock(5);
+        item.setStock(0);
+        assertThat(item.getStock(), is(0));
+    }
+
+    @Test
+    public void 在庫を再設定できる_変化しない() throws Exception {
+        item.addStock(5);
+        item.setStock(5);
+        assertThat(item.getStock(), is(5));
+    }
+
+    @Test(expected=InventoryException.class)
+    public void 在庫を再設定できる_マイナスにはできない() throws Exception {
+        item.setStock(-5);
+    }
 }

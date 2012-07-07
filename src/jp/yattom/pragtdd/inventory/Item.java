@@ -18,7 +18,10 @@ public class Item {
         this.stock += value;
     }
 
-    public void setStock(int stock) {
+    public void setStock(int stock) throws InventoryException {
+        if(stock < 0) {
+            throw new InventoryException("在庫数をマイナスにはできない");
+        }
         this.stock = stock;
     }
 
