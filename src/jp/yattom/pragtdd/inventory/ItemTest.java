@@ -4,10 +4,19 @@ import static jp.yattom.pragtdd.inventory.test.TestUtil.buildDate;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class ItemTest {
+    private static final Date Date0109 = buildDate(2012, 1, 9);
+    private static final Date Date0110 = buildDate(2012, 1, 10);
+    private static final Date Date0111 = buildDate(2012, 1, 11);
+    private static final Date Date0115 = buildDate(2012, 1, 15);
+    private static final Date Date0116 = buildDate(2012, 1, 16);
+    private static final Date Date0120 = buildDate(2012, 1, 20);
+    private static final Date Date0121 = buildDate(2012, 1, 21);
     private Item item;
 
     @Before
@@ -104,9 +113,36 @@ public class ItemTest {
     }
 
     @Test
-    public void 指定した時点の在庫数を取得できる() throws Exception {
-        item.addStock(10, buildDate(2012, 1, 10));
-        assertThat(item.getStock(buildDate(2012, 1, 9)), is(0));
-        assertThat(item.getStock(buildDate(2012, 1, 11)), is(10));
+    public void 指定した時点の在庫数を取得できる_1件だけ() throws Exception {
+        item.addStock(10, Date0110);
+        assertThat(item.getStock(Date0109), is(0));
+        assertThat(item.getStock(Date0111), is(10));
+    }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる_0件() throws Exception {
+        assertThat(item.getStock(Date0110), is(0));
+    }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる_複数件() throws Exception {
+        item.addStock(10, Date0110);
+        item.addStock(20, Date0115);
+        item.addStock(-5, Date0120);
+        assertThat(item.getStock(Date0109), is(0));
+        assertThat(item.getStock(Date0111), is(10));
+        assertThat(item.getStock(Date0116), is(30));
+        assertThat(item.getStock(Date0121), is(25));
+    }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる_順序には関係ないこと() throws Exception {
+        item.addStock(20, Date0115);
+        item.addStock(-5, Date0120);
+        item.addStock(10, Date0110);
+        assertThat(item.getStock(Date0109), is(0));
+        assertThat(item.getStock(Date0111), is(10));
+        assertThat(item.getStock(Date0116), is(30));
+        assertThat(item.getStock(Date0121), is(25));
     }
 }
