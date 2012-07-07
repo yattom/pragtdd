@@ -3,6 +3,11 @@ package jp.yattom.pragtdd.inventory;
 public class Item {
 
     private int stock;
+    private String name;
+
+    public Item(String name) {
+        this.name = name;
+    }
 
     public int getStock() {
         return stock;
@@ -20,5 +25,9 @@ public class Item {
             throw new InventoryException("在庫数をマイナスにはできない");
         }
         this.stock = stock;
+    }
+
+    public String getName() {
+        return name;
     }
 }

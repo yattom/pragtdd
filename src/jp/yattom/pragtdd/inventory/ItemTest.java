@@ -10,7 +10,7 @@ public class ItemTest {
     private Item item;
     @Before
     public void itemを準備() {
-        item = new Item();
+        item = new Item("商品");
     }
 
     @Test
