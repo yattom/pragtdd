@@ -12,6 +12,9 @@ public class Item {
         if(value == 0) {
             throw new InventoryException("在庫数の増加分としてゼロは許されない");
         }
+        if(stock + value < 0) {
+            throw new InventoryException("在庫数をマイナスにはできない");
+        }
         this.stock += value;
     }
 
