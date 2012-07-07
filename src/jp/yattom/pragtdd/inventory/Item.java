@@ -1,14 +1,18 @@
 package jp.yattom.pragtdd.inventory;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Item {
 
     private int stock;
     private String name;
+    private List<Object[]> history;
 
     public Item(String name) {
         this.name = name;
+        history = new ArrayList<>();
     }
 
     public int getStock() {
@@ -34,10 +38,16 @@ public class Item {
         if(value == 0) {
             throw new InventoryException("在庫数の増加分としてゼロは許されない");
         }
-        setStock(stock + value);
+        history.add(new Object[] { date, value });
     }
 
     public int getStock(Date asOf) {
-        return 0;
+        int total = 0;
+        for(Object[] h : history) {
+            if(!((Date)h[0]).after(asOf)) {
+                total += (int)h[1];
+            }
+        }
+        return total;
     }
 }
