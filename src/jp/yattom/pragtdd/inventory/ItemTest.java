@@ -12,14 +12,14 @@ public class ItemTest {
         Item item = new Item();
         assertThat(item.getStock(), is(0));
     }
-    
+
     @Test
     public void 在庫を取得できる_増やして取得() throws Exception {
         Item item = new Item();
         item.addStock(10);
         assertThat(item.getStock(), is(10));
     }
-    
+
     @Test
     public void 在庫を増やす_連続() throws Exception {
         Item item = new Item();
@@ -27,15 +27,10 @@ public class ItemTest {
         item.addStock(5);
         assertThat(item.getStock(), is(15));
     }
-    
-    @Test
+
+    @Test(expected = InventoryException.class)
     public void 在庫を増やす_ゼロは許さない() throws Exception {
         Item item = new Item();
-        try {
-            item.addStock(0);
-            fail("増分としてゼロは不可");
-        } catch(InventoryException e) {
-            //ok
-        }
+        item.addStock(0);
     }
 }
