@@ -15,14 +15,10 @@ public class Item {
         setStock(stock + value);
     }
 
-    private void validateNewStockValue(int value) throws InventoryException {
-        if(value < 0) {
+    public void setStock(int stock) throws InventoryException {
+        if(stock < 0) {
             throw new InventoryException("在庫数をマイナスにはできない");
         }
-    }
-
-    public void setStock(int stock) throws InventoryException {
-        validateNewStockValue(stock);
         this.stock = stock;
     }
 }
