@@ -9,6 +9,9 @@ public class Item {
     }
 
     public void addStock(int value) throws InventoryException {
+        if(value == 0) {
+            throw new InventoryException("在庫数の増加分としてゼロは許されない");
+        }
         this.stock += value;
     }
 
