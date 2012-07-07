@@ -24,10 +24,11 @@ public class Item {
     }
 
     public void setStock(int stock) throws InventoryException {
-        if (stock < 0) {
-            throw new InventoryException("在庫数をマイナスにはできない");
-        }
-        addStock(stock - getStock());
+        setStock(stock, new Date());
+    }
+    
+    public void setStock(int stock, Date date) throws InventoryException {
+        addStockInternal(stock - getStock(), date);
     }
 
     public String getName() {
@@ -38,6 +39,10 @@ public class Item {
         if (value == 0) {
             throw new InventoryException("在庫数の増加分としてゼロは許されない");
         }
+        addStockInternal(value, date);
+    }
+
+    private void addStockInternal(int value, Date date) throws InventoryException {
         if (getStock() + value < 0) {
             throw new InventoryException("在庫数をマイナスにはできない");
         }
