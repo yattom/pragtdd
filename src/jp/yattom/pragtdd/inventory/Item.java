@@ -5,10 +5,16 @@ import java.util.Date;
 import java.util.List;
 
 public class Item {
-
-    private int stock;
+    static class Entry {
+        public int value;
+        public Date date;
+        public Entry(Date date, int value) {
+            this.value = value;
+            this.date = date;
+        }
+    }
     private String name;
-    private List<Object[]> history;
+    private List<Entry> history;
 
     public Item(String name) {
         this.name = name;
@@ -46,14 +52,14 @@ public class Item {
         if (getStock() + value < 0) {
             throw new InventoryException("在庫数をマイナスにはできない");
         }
-        history.add(new Object[] { date, value });
+        history.add(new Entry(date, value));
     }
 
     public int getStock(Date asOf) {
         int total = 0;
-        for (Object[] h : history) {
-            if (!((Date) h[0]).after(asOf)) {
-                total += (int) h[1];
+        for (Entry e: history) {
+            if (!e.date.after(asOf)) {
+                total += e.value;
             }
         }
         return total;
