@@ -12,4 +12,11 @@ public class ItemTest {
         Item item = new Item();
         assertThat(item.getStock(), is(0));
     }
+    
+    @Test
+    public void 在庫を取得できる_増やして取得() {
+        Item item = new Item();
+        item.addStock(10);
+        assertThat(item.getStock(), is(10));
+    }
 }
