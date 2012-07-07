@@ -43,4 +43,16 @@ public class ItemTest {
         assertThat(item.getStock(), is(20));
     }
 
+    @Test
+    public void 在庫を取得できる_ちょうどゼロになる() throws Exception {
+        item.addStock(10);
+        item.addStock(-10);
+        assertThat(item.getStock(), is(0));
+    }
+
+    @Test(expected=InventoryException.class)
+    public void 在庫を取得できる_マイナスになるのは不可() throws Exception {
+        item.addStock(5);
+        item.addStock(-10);
+    }
 }
