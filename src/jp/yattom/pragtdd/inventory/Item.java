@@ -5,14 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Item {
-    static class Entry {
-        public int value;
-        public Date date;
-        public Entry(Date date, int value) {
-            this.value = value;
-            this.date = date;
-        }
-    }
     private String name;
     private List<Entry> history;
 
@@ -32,7 +24,7 @@ public class Item {
     public void setStock(int stock) throws InventoryException {
         setStock(stock, new Date());
     }
-    
+
     public void setStock(int stock, Date date) throws InventoryException {
         addEntry(new Entry(date, stock - getStock()));
     }
@@ -49,7 +41,7 @@ public class Item {
     }
 
     private void addEntry(Entry entry) throws InventoryException {
-        if (getStock() + entry.value < 0) {
+        if (getStock() + entry.getValue() < 0) {
             throw new InventoryException("在庫数をマイナスにはできない");
         }
         history.add(entry);
@@ -57,9 +49,9 @@ public class Item {
 
     public int getStock(Date asOf) {
         int total = 0;
-        for (Entry e: history) {
-            if (!e.date.after(asOf)) {
-                total += e.value;
+        for (Entry e : history) {
+            if (!e.getDate().after(asOf)) {
+                total += e.getValue();
             }
         }
         return total;
