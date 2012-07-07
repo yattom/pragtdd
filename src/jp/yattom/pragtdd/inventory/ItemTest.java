@@ -1,5 +1,6 @@
 package jp.yattom.pragtdd.inventory;
 
+import static jp.yattom.pragtdd.inventory.test.TestUtil.buildDate;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -8,6 +9,7 @@ import org.junit.Test;
 
 public class ItemTest {
     private Item item;
+
     @Before
     public void itemを準備() {
         item = new Item("商品");
@@ -65,13 +67,13 @@ public class ItemTest {
         assertThat(item.getStock(), is(0));
     }
 
-    @Test(expected=InventoryException.class)
+    @Test(expected = InventoryException.class)
     public void 在庫を減らせる_マイナスになるのは不可_ちょうどマイナス1() throws Exception {
         item.addStock(5);
         item.addStock(-6);
     }
 
-    @Test(expected=InventoryException.class)
+    @Test(expected = InventoryException.class)
     public void 在庫を減らせる_マイナスになるのは不可_最小の負数() throws Exception {
         item.addStock(Integer.MIN_VALUE);
     }
@@ -96,8 +98,15 @@ public class ItemTest {
         assertThat(item.getStock(), is(5));
     }
 
-    @Test(expected=InventoryException.class)
+    @Test(expected = InventoryException.class)
     public void 在庫を再設定できる_マイナスにはできない() throws Exception {
         item.setStock(-1);
+    }
+
+    @Test
+    public void 指定した時点の在庫数を取得できる() throws Exception {
+        item.addStock(10, buildDate(2012, 1, 10));
+        assertThat(item.getStock(buildDate(2012, 1, 9)), is(0));
+        assertThat(item.getStock(buildDate(2012, 1, 11)), is(10));
     }
 }
