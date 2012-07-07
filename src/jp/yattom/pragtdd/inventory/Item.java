@@ -24,10 +24,10 @@ public class Item {
     }
 
     public void setStock(int stock) throws InventoryException {
-        if(stock < 0) {
+        if (stock < 0) {
             throw new InventoryException("在庫数をマイナスにはできない");
         }
-        this.stock = stock;
+        addStock(stock - getStock());
     }
 
     public String getName() {
@@ -35,17 +35,20 @@ public class Item {
     }
 
     public void addStock(int value, Date date) throws InventoryException {
-        if(value == 0) {
+        if (value == 0) {
             throw new InventoryException("在庫数の増加分としてゼロは許されない");
+        }
+        if (getStock() + value < 0) {
+            throw new InventoryException("在庫数をマイナスにはできない");
         }
         history.add(new Object[] { date, value });
     }
 
     public int getStock(Date asOf) {
         int total = 0;
-        for(Object[] h : history) {
-            if(!((Date)h[0]).after(asOf)) {
-                total += (int)h[1];
+        for (Object[] h : history) {
+            if (!((Date) h[0]).after(asOf)) {
+                total += (int) h[1];
             }
         }
         return total;
