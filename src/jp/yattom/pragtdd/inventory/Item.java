@@ -56,4 +56,13 @@ public class Item {
         }
         return total;
     }
+    
+    @Override
+    public boolean equals(Object other) {
+    	if(!(other instanceof Item)) {
+    		return false;
+    	}
+    	Item otherItem = (Item)other;
+    	return getName().equals(otherItem.getName());
+    }
 }
