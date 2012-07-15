@@ -41,9 +41,6 @@ public class Item {
     }
 
     private void addEntry(Entry entry) throws InventoryException {
-        if (getStock() + entry.getValue() < 0) {
-            throw new InventoryException("在庫数をマイナスにはできない");
-        }
         history.add(entry);
     }
 
