@@ -76,14 +76,14 @@ public class ItemTest {
         assertThat(item.getStock(), is(0));
     }
 
-    @Test(expected = InventoryException.class)
-    public void 在庫を減らせる_マイナスになるのは不可_ちょうどマイナス1() throws Exception {
+    @Test
+    public void 在庫を減らせる_ちょうどマイナス1() throws Exception {
         item.addStock(5);
         item.addStock(-6);
     }
 
-    @Test(expected = InventoryException.class)
-    public void 在庫を減らせる_マイナスになるのは不可_最小の負数() throws Exception {
+    @Test
+    public void 在庫を減らせる_最小の負数() throws Exception {
         item.addStock(Integer.MIN_VALUE);
     }
 
@@ -107,8 +107,8 @@ public class ItemTest {
         assertThat(item.getStock(), is(5));
     }
 
-    @Test(expected = InventoryException.class)
-    public void 在庫を再設定できる_マイナスにはできない() throws Exception {
+    @Test
+    public void 在庫を再設定できる_マイナスにできる() throws Exception {
         item.setStock(-1);
     }
 
