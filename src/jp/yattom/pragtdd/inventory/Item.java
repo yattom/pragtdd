@@ -53,4 +53,8 @@ public class Item {
         }
         return total;
     }
+
+    public List<Entry> getHistory() {
+        return history;
+    }
 }

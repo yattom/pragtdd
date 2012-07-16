@@ -1,6 +1,7 @@
 package jp.yattom.pragtdd.inventory;
 
 import static jp.yattom.pragtdd.inventory.test.TestUtil.buildDate;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -168,5 +169,21 @@ public class ItemTest {
         item.addStock(20, buildDate(2012, 1, 1, 10, 0, 0));
         assertThat(item.getStock(buildDate(2012, 1, 1, 9, 59, 59)), is(0));
         assertThat(item.getStock(buildDate(2012, 1, 1, 10, 0, 0)), is(10));
+    }
+
+    @Test
+    public void 履歴が取得できる() throws Exception {
+        item.addStock(10, Date0110);
+        assertThat(item.getHistory().get(0).getDate(), equalTo(Date0110));
+        assertThat(item.getHistory().get(0).getValue(), equalTo(10));
+
+        item.addStock(-3, Date0115);
+        assertThat(item.getHistory().get(1).getDate(), equalTo(Date0115));
+        assertThat(item.getHistory().get(1).getValue(), equalTo(-3));
+    }
+
+    @Test
+    public void 履歴が取得できる_最初は空() throws Exception {
+        assertThat(item.getHistory().size(), is(0));
     }
 }
