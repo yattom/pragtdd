@@ -13,6 +13,9 @@ public class Item {
         history = new ArrayList<>();
     }
 
+    public Item() {
+    }
+
     public int getStock() {
         return getStock(new Date());
     }
@@ -56,5 +59,10 @@ public class Item {
 
     public List<Entry> getHistory() {
         return history;
+    }
+
+    //TODO nameを変更できないようにする
+    public void setName(String name) {
+        this.name = name;
     }
 }
