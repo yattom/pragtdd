@@ -24,16 +24,6 @@ import org.xml.sax.SAXException;
 
 @Path("/items")
 public class ItemResource {
-    static {
-        try {
-            ItemRepository.getInstance().store(new Item("商品A"));
-            ItemRepository.getInstance().store(new Item("商品B"));
-            ItemRepository.getInstance().store(new Item("商品C"));
-        } catch (InventoryException e) {
-            throw new RuntimeException("テスト用商品データが作成できませんでした", e);
-        }
-    }
-
     @GET
     @Produces("application/xml")
     public String allItems() {
