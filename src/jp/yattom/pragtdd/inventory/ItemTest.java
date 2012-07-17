@@ -186,4 +186,25 @@ public class ItemTest {
     public void 履歴が取得できる_最初は空() throws Exception {
         assertThat(item.getHistory().size(), is(0));
     }
+    
+    @Test
+    public void 同値_nameが一致すればequal() throws Exception {
+        Item item1 = new Item("同じ名前");
+        Item item2 = new Item("同じ名前");
+        assertThat(item1.equals(item2), is(true));
+    }
+    
+    @Test
+    public void 同値_nameが違えば同値でない() throws Exception {
+        Item item1 = new Item("同じ名前");
+        Item item2 = new Item("違う名前");
+        assertThat(item1.equals(item2), is(false));
+    }
+
+    @Test
+    public void 同値_別classなら同値でない() throws Exception {
+        Item item1 = new Item("同じ名前");
+        Object obj2 = new Object();
+        assertThat(item1.equals(obj2), is(false));
+    }
 }

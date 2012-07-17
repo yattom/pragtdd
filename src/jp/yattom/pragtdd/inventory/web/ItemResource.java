@@ -45,10 +45,15 @@ public class ItemResource {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
         Document doc = builder.parse(is);
-        Element root = doc.getDocumentElement();
+        Element itemElement = doc.getDocumentElement();
 
+        Item newItem = readItem(itemElement);
+        ItemRepository.getInstance().store(newItem);
+    }
+
+    static Item readItem(Element itemElement) {
         Item newItem = new Item();
-        NodeList nodes = root.getChildNodes();
+        NodeList nodes = itemElement.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE
@@ -56,6 +61,6 @@ public class ItemResource {
                 newItem.setName(n.getTextContent());
             }
         }
-        ItemRepository.getInstance().store(newItem);
+        return newItem;
     }
 }

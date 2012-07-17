@@ -61,8 +61,17 @@ public class Item {
         return history;
     }
 
-    //TODO nameを変更できないようにする
+    // TODO nameを変更できないようにする
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Item)) {
+            return false;
+        }
+        Item otherItem = (Item) other;
+        return otherItem.getName().equals(getName());
     }
 }
