@@ -23,14 +23,14 @@ public class ItemResourceTest {
     @Test
     public void 商品を一覧できる_空の場合() throws Exception {
         String resp = new ItemResource().allItems();
-        assertThat(resp, equalTo("<item></item>"));
+        assertThat(resp, equalTo("<items></items>"));
     }
 
     @Test
     public void 商品を一覧できる_1件の場合() throws Exception {
         ItemRepository.getInstance().store(new Item("商品A"));
         String resp = new ItemResource().allItems();
-        assertThat(resp, equalTo("<item><name>商品A</name></item>"));
+        assertThat(resp, equalTo("<items><item><name>商品A</name></item></items>"));
     }
 
     @Test
@@ -40,11 +40,11 @@ public class ItemResourceTest {
         ItemRepository.getInstance().store(new Item("商品C"));
 
         StringBuilder expected = new StringBuilder();
-        expected.append("<item>");
-        expected.append("<name>商品A</name>");
-        expected.append("<name>商品B</name>");
-        expected.append("<name>商品C</name>");
-        expected.append("</item>");
+        expected.append("<items>");
+        expected.append("<item><name>商品A</name></item>");
+        expected.append("<item><name>商品B</name></item>");
+        expected.append("<item><name>商品C</name></item>");
+        expected.append("</items>");
         String resp = new ItemResource().allItems();
         assertThat(resp, equalTo(expected.toString()));
     }

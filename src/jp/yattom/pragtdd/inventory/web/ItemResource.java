@@ -28,11 +28,13 @@ public class ItemResource {
     @Produces("application/xml")
     public String allItems() {
         StringBuilder s = new StringBuilder();
-        s.append("<item>");
+        s.append("<items>");
         for (Item item : ItemRepository.getInstance().allItems()) {
+            s.append("<item>");
             s.append("<name>" + item.getName() + "</name>");
+            s.append("</item>");
         }
-        s.append("</item>");
+        s.append("</items>");
         return s.toString();
     }
 
