@@ -10,6 +10,7 @@ public class ItemRepository {
     private Map<String, Item> repository;
 
     private ItemRepository() {
+        // 名前の昇順で取得できるようにする
         repository = new TreeMap<String, Item>();
     }
 
