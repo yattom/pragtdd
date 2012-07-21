@@ -1,8 +1,8 @@
 package jp.yattom.pragtdd.inventory;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ItemRepository {
     static private ItemRepository instance = new ItemRepository();
@@ -10,7 +10,7 @@ public class ItemRepository {
     private Map<String, Item> repository;
 
     private ItemRepository() {
-        repository = new HashMap<String, Item>();
+        repository = new TreeMap<String, Item>();
     }
 
     static public ItemRepository getInstance() {
