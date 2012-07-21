@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,5 +62,26 @@ public class ItemRepositoryTest {
         repo.store(itemC);
         assertThat(repo.allItems().size(), is(3));
         assertThat(repo.allItems(), hasItems(itemA, itemB, itemC));
+    }
+
+    @Test
+    public void Itemの一覧を取得できる_名前順であること() throws Exception {
+        Item item1 = new Item("商");
+        Item item2 = new Item("商品");
+        Item item3 = new Item("商品A");
+        Item item4 = new Item("商品AA");
+        Item item5 = new Item("商品C");
+        repo.store(item5);
+        repo.store(item2);
+        repo.store(item3);
+        repo.store(item1);
+        repo.store(item4);
+
+        List<Item> actual = new ArrayList<>(repo.allItems());
+        assertThat(actual.get(0), is(item1));
+        assertThat(actual.get(1), is(item2));
+        assertThat(actual.get(2), is(item3));
+        assertThat(actual.get(3), is(item4));
+        assertThat(actual.get(4), is(item5));
     }
 }
