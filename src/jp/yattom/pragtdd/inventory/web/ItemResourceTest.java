@@ -49,21 +49,15 @@ public class ItemResourceTest {
         ItemRepository.getInstance().store(new Item("商品B"));
         ItemRepository.getInstance().store(new Item("商品C"));
 
-        String resp = new ItemResource().allItems();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(resp
-                .getBytes("utf-8")));
-        Element root = doc.getDocumentElement();
-        List<Item> items = new ArrayList<>();
-        NodeList elements = root.getChildNodes();
-        for (int i = 0; i < elements.getLength(); i++) {
-            items.add(ItemResource.readItem((Element) elements.item(i)));
-        }
+        StringBuilder expected = new StringBuilder();
+        expected.append("<items>");
+        expected.append("<item><name>商品A</name></item>");
+        expected.append("<item><name>商品B</name></item>");
+        expected.append("<item><name>商品C</name></item>");
+        expected.append("</items>");
 
-        assertThat(items.size(), is(3));
-        assertThat(items,
-                hasItems(new Item("商品A"), new Item("商品B"), new Item("商品C")));
+        String resp = new ItemResource().allItems();
+        assertThat(resp, is(expected.toString()));
     }
 
     @Test
