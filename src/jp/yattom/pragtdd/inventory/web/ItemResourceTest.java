@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import jp.yattom.pragtdd.inventory.InventoryException;
 import jp.yattom.pragtdd.inventory.Item;
@@ -23,15 +25,14 @@ public class ItemResourceTest {
     @Test
     public void 商品を一覧できる_空の場合() throws Exception {
         String resp = new ItemResource().allItems();
-        assertThat(resp, equalTo("<items></items>"));
+        assertThat(resp, equalTo(itemsXml()));
     }
 
     @Test
     public void 商品を一覧できる_1件の場合() throws Exception {
         ItemRepository.getInstance().store(new Item("商品A"));
         String resp = new ItemResource().allItems();
-        assertThat(resp,
-                equalTo("<items><item><name>商品A</name></item></items>"));
+        assertThat(resp, equalTo(itemsXml("商品A")));
     }
 
     @Test
@@ -40,47 +41,60 @@ public class ItemResourceTest {
         ItemRepository.getInstance().store(new Item("商品B"));
         ItemRepository.getInstance().store(new Item("商品C"));
 
-        StringBuilder expected = new StringBuilder();
-        expected.append("<items>");
-        expected.append("<item><name>商品A</name></item>");
-        expected.append("<item><name>商品B</name></item>");
-        expected.append("<item><name>商品C</name></item>");
-        expected.append("</items>");
+        String expected = itemsXml("商品A", "商品B", "商品C");
 
         String resp = new ItemResource().allItems();
-        assertThat(resp, is(expected.toString()));
+        assertThat(resp, is(expected));
     }
 
     @Test
     public void 商品を新規作成できる() throws Exception {
-        StringBuilder req = new StringBuilder();
-        req.append("<item>");
-        req.append("<name>商品X</name>");
-        req.append("</item>");
-        ByteArrayInputStream is = new ByteArrayInputStream(req.toString()
-                .getBytes("utf-8"));
-        new ItemResource().createItem(is);
+        String name = "商品X";
+        new ItemResource().createItem(toStream(itemXml(name)));
 
-        assertThat(ItemRepository.getInstance().findByName("商品X").getName(),
-                is("商品X"));
+        assertThat(ItemRepository.getInstance().findByName(name).getName(),
+                is(name));
     }
 
     @Test
     public void 商品を新規作成できる_同じ名前はエラー() throws Exception {
-        StringBuilder req = new StringBuilder();
-        req.append("<item>");
-        req.append("<name>商品X</name>");
-        req.append("</item>");
-        ByteArrayInputStream is = new ByteArrayInputStream(req.toString()
-                .getBytes("utf-8"));
-        new ItemResource().createItem(is);
+        String name = "商品X";
+        new ItemResource().createItem(toStream(itemXml(name)));
 
         try {
-            is.reset();
-            new ItemResource().createItem(is);
+            new ItemResource().createItem(toStream(itemXml(name)));
             fail("同じ名前では作成できない");
         } catch (InventoryException e) {
             // ok
         }
     }
+
+    public static InputStream toStream(String xml) {
+        try {
+            return new ByteArrayInputStream(xml.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            // utf-8なので起きないはず
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String itemXml(String name) {
+        StringBuilder req = new StringBuilder();
+        req.append("<item>");
+        req.append("<name>" + name + "</name>");
+        req.append("</item>");
+        return req.toString();
+    }
+
+    public static String itemsXml(String... names) {
+        StringBuilder expected = new StringBuilder();
+        expected.append("<items>");
+        for (String name : names) {
+            expected.append(itemXml(name));
+        }
+        expected.append("</items>");
+        String ex = expected.toString();
+        return ex;
+    }
+
 }
