@@ -18,15 +18,39 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import jp.yattom.pragtdd.inventory.web.test.ItemResourceUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class APITest {
-    static public class Response {
+    static public class Request {
         public HttpURLConnection conn;
         public InputStream content;
+
+        public void send(boolean isPost, String formData)
+                throws MalformedURLException, IOException, ProtocolException,
+                UnsupportedEncodingException {
+            URL url = new URL("http://localhost:8080/pragtdd-spike/items/");
+            conn = (HttpURLConnection) url.openConnection();
+            if (isPost) {
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-type", "application/xml");
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(
+                        conn.getOutputStream(), "utf-8"));
+                out.print(formData);
+                out.flush();
+            }
+            content = (InputStream) conn.getContent();
+        }
+
+    }
+
+    @Before
+    public void setUp() throws Exception {
+
     }
 
     @Test
@@ -63,10 +87,11 @@ public class APITest {
     private boolean 商品が存在する(String name) throws Exception {
         boolean isPost = false;
         String formData = null;
-        Response res = request(isPost, formData);
+        Request req = new Request();
+        req.send(isPost, formData);
         DocumentBuilder builder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
-        Document doc = builder.parse(res.content);
+        Document doc = builder.parse(req.content);
         NodeList items = doc.getElementsByTagName("item");
         for (int i = 0; i < items.getLength(); i++) {
             Element element = (Element) items.item(i);
@@ -83,28 +108,10 @@ public class APITest {
     private void 商品を作成する(String name) throws Exception {
         boolean isPost = true;
         String formData = ItemResourceUtil.itemXml(name);
-        Response res = request(isPost, formData);
-        assertThat(res.conn.getResponseCode(),
+        Request req = new Request();
+        req.send(isPost, formData);
+        assertThat(req.conn.getResponseCode(),
                 is(HttpURLConnection.HTTP_NO_CONTENT));
-    }
-
-    private Response request(boolean isPost, String formData)
-            throws MalformedURLException, IOException, ProtocolException,
-            UnsupportedEncodingException {
-        URL url = new URL("http://localhost:8080/pragtdd-spike/items/");
-        Response res = new Response();
-        res.conn = (HttpURLConnection) url.openConnection();
-        if (isPost) {
-            res.conn.setRequestMethod("POST");
-            res.conn.setDoOutput(true);
-            res.conn.setRequestProperty("Content-type", "application/xml");
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(
-                    res.conn.getOutputStream(), "utf-8"));
-            out.print(formData);
-            out.flush();
-        }
-        res.content = (InputStream) res.conn.getContent();
-        return res;
     }
 
     private boolean 商品が存在しない(String name) throws Exception {
