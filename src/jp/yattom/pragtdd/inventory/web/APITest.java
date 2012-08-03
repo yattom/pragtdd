@@ -26,15 +26,26 @@ import org.w3c.dom.NodeList;
 
 public class APITest {
     static public class Request {
-        public HttpURLConnection conn;
-        public InputStream content;
+        public enum Method {
+            GET, POST, PUT
+        };
 
-        public void send(boolean isPost, String formData)
+        public HttpURLConnection conn;
+        private String url;
+        private Method method;
+        private int responseCode;
+
+        public Request(String api, Method method) {
+            url = "http://localhost:8080/pragtdd-spike/" + api;
+            this.method = method;
+        }
+
+        public void send(String formData)
                 throws MalformedURLException, IOException, ProtocolException,
                 UnsupportedEncodingException {
-            URL url = new URL("http://localhost:8080/pragtdd-spike/items/");
+            URL url = new URL(this.url);
             conn = (HttpURLConnection) url.openConnection();
-            if (isPost) {
+            if (method == Method.POST) {
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-type", "application/xml");
@@ -43,14 +54,27 @@ public class APITest {
                 out.print(formData);
                 out.flush();
             }
-            content = (InputStream) conn.getContent();
+            if (method == Method.PUT) {
+                conn.setRequestMethod("PUT");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-type", "application/xml");
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(
+                        conn.getOutputStream(), "utf-8"));
+                out.print(formData);
+                out.flush();
+            }
+            responseCode = conn.getResponseCode();
+        }
+
+        public InputStream getContent() throws Exception {
+            return (InputStream) conn.getContent();
         }
 
     }
 
     @Before
     public void setUp() throws Exception {
-
+        データを初期化する();
     }
 
     @Test
@@ -85,13 +109,12 @@ public class APITest {
     }
 
     private boolean 商品が存在する(String name) throws Exception {
-        boolean isPost = false;
         String formData = null;
-        Request req = new Request();
-        req.send(isPost, formData);
+        Request req = new Request("items", Request.Method.GET);
+        req.send(formData);
         DocumentBuilder builder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
-        Document doc = builder.parse(req.content);
+        Document doc = builder.parse(req.getContent());
         NodeList items = doc.getElementsByTagName("item");
         for (int i = 0; i < items.getLength(); i++) {
             Element element = (Element) items.item(i);
@@ -106,16 +129,19 @@ public class APITest {
     }
 
     private void 商品を作成する(String name) throws Exception {
-        boolean isPost = true;
         String formData = ItemResourceUtil.itemXml(name);
-        Request req = new Request();
-        req.send(isPost, formData);
-        assertThat(req.conn.getResponseCode(),
-                is(HttpURLConnection.HTTP_NO_CONTENT));
+        Request req = new Request("items", Request.Method.POST);
+        req.send(formData);
+        assertThat(req.responseCode, is(HttpURLConnection.HTTP_NO_CONTENT));
     }
 
     private boolean 商品が存在しない(String name) throws Exception {
         return !商品が存在する(name);
+    }
+
+    private void データを初期化する() throws Exception {
+        Request req = new Request("init-data", Request.Method.PUT);
+        req.send("");
     }
 
 }
