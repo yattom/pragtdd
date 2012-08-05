@@ -96,9 +96,8 @@ public class APITest {
         assertThat(商品の在庫(name), is(2));
     }
 
-    private void 商品の在庫を減らす(String name, int amount) {
-        // TODO Auto-generated method stub
-
+    private void 商品の在庫を減らす(String name, int amount) throws Exception {
+        商品の在庫を追加する(name, -amount);
     }
 
     private void 商品の在庫を追加する(String name, int amount) throws Exception {
@@ -108,9 +107,19 @@ public class APITest {
         assertThat(req.responseCode, is(HttpURLConnection.HTTP_NO_CONTENT));
     }
 
-    private int 商品の在庫(String name) {
-        // TODO Auto-generated method stub
-        return 0;
+    private int 商品の在庫(String name) throws Exception {
+        String formData = null;
+        Request req = new Request("items/" + URLEncoder.encode(name, "utf-8"), Request.Method.GET);
+        req.send(formData);
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder();
+        Document doc = builder.parse(req.getContent());
+        NodeList item = doc.getElementsByTagName("item");
+        Element element = (Element) item.item(0);
+        NodeList nameElement = element.getElementsByTagName("amount");
+        String value = ((Element) nameElement.item(0))
+                .getTextContent();
+        return Integer.parseInt(value);
     }
 
     private boolean 商品が存在する(String name) throws Exception {

@@ -42,6 +42,20 @@ public class ItemResource {
         return s.toString();
     }
 
+    @GET
+    @Path("{name}")
+    @Produces("application/xml")
+    public String item(@PathParam("name") String name) throws InventoryException {
+        Item item = ItemRepository.getInstance().findByName(name);
+        
+        StringBuilder s = new StringBuilder();
+        s.append("<item>");
+        s.append("<name>" + item.getName() + "</name>");
+        s.append("<amount>" + item.getStock() + "</amount>");
+        s.append("</item>");
+        return s.toString();
+    }
+
     @POST
     @Consumes("application/xml")
     public void createItem(InputStream is) throws ParserConfigurationException,
