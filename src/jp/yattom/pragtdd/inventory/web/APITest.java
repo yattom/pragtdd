@@ -12,6 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -98,9 +101,11 @@ public class APITest {
 
     }
 
-    private void 商品の在庫を追加する(String name, int amount) {
-        // TODO Auto-generated method stub
-
+    private void 商品の在庫を追加する(String name, int amount) throws Exception {
+        String formData = "<entry><amount>" + amount + "</amount><date>" + SimpleDateFormat.getInstance().format(new Date()) + "</date></entry>";
+        Request req = new Request("items/" + URLEncoder.encode(name, "utf-8") + "/entries", Request.Method.POST);
+        req.send(formData);
+        assertThat(req.responseCode, is(HttpURLConnection.HTTP_NO_CONTENT));
     }
 
     private int 商品の在庫(String name) {

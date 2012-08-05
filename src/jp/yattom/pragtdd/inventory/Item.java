@@ -9,11 +9,12 @@ public class Item {
     private List<Entry> history;
 
     public Item(String name) {
+        this();
         this.name = name;
-        history = new ArrayList<>();
     }
 
     public Item() {
+        history = new ArrayList<>();
     }
 
     public int getStock() {

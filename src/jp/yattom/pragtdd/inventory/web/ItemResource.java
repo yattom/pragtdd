@@ -2,11 +2,15 @@ package jp.yattom.pragtdd.inventory.web;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,6 +53,34 @@ public class ItemResource {
 
         Item newItem = readItem(itemElement);
         ItemRepository.getInstance().store(newItem);
+    }
+
+    @POST
+    @Path("{name}/entries")
+    @Consumes("application/xml")
+    public void createEntry(@PathParam("name") String name, InputStream is) throws ParserConfigurationException,
+            SAXException, IOException, InventoryException, ParseException {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder();
+        Document doc = builder.parse(is);
+        Element entryElement = doc.getDocumentElement();
+
+        Date date = null;
+        int value = 0;
+        NodeList nodes = entryElement.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node n = nodes.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE
+                    && n.getNodeName().equals("date")) {
+                date = SimpleDateFormat.getInstance().parse(n.getTextContent());
+            }
+            if (n.getNodeType() == Node.ELEMENT_NODE
+                    && n.getNodeName().equals("amount")) {
+                value = Integer.parseInt(n.getTextContent());
+            }
+        }
+        Item item = ItemRepository.getInstance().findByName(name);
+        item.addStock(value, date);
     }
 
     static Item readItem(Element itemElement) {

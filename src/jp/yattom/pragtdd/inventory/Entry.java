@@ -2,7 +2,7 @@ package jp.yattom.pragtdd.inventory;
 
 import java.util.Date;
 
-class Entry {
+public class Entry {
     private int value;
     private Date date;
 
